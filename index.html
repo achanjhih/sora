@@ -8,7 +8,8 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="ソーラメーカー｜あさひにっき">
 <meta property="og:description" content="パーツをえらんで、自分だけのソーラをつくろう。">
-<meta property="og:image" content="ogp.png">
+<meta property="og:url" content="https://achanjhih.github.io/sora/">
+<meta property="og:image" content="https://achanjhih.github.io/sora/ogp.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%85%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -342,40 +343,111 @@ function patternShapes(s, W, where) {
 }
 
 /* eyes are drawn in local space around (0,0); right eye is mirrored */
-function eyeSVG(s, id) {
+function spiralPath() {
+  let d = '';
+  for (let i = 0; i <= 64; i++) {
+    const t = i / 64 * 4 * Math.PI, r = 1 + t * 1.0;
+    d += (i ? 'L' : 'M') + n1(r * Math.cos(t)) + ' ' + n1(r * Math.sin(t)) + ' ';
+  }
+  return d;
+}
+const SPIRAL = spiralPath();
+const EYE_NO_COLOR = ['niko', 'maru', 'nemu', 'gyu', 'guru', 'ten'];
+
+function eyeSVG(s, id, side) {
   const ec = s.eyeColor;
   const glow = mix(ec, '#ffffff', 0.55);
   const pupil = mix(ec, '#120f1c', 0.82);
   const L = `stroke="${LINE}" stroke-linecap="round" stroke-linejoin="round" fill="none"`;
+  const iris = (rx, ry, cx = 0, cy = 0) => `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${ec}"/><ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="url(#${id}-iris)"/>`;
+  const ring = (rx, ry, cx = 0, cy = 0) => `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" ${L} stroke-width="2"/>`;
+  const topLash = `<path d="M-20 -3 Q-8 -30 18 -15" ${L} stroke-width="5"/>`;
+  const closedArc = `<path d="M-14 4 Q0 -13 14 4" ${L} stroke-width="5"/>`;
   switch (s.eyes) {
     case 'jito':
       return `<g clip-path="url(#${id}-jito)">
-        <ellipse cy="2" rx="16" ry="19" fill="${ec}"/><ellipse cy="2" rx="16" ry="19" fill="url(#${id}-iris)"/>
+        ${iris(16, 19, 0, 2)}
         <ellipse cy="7" rx="7" ry="9" fill="${pupil}"/>
         <ellipse cy="14" rx="9" ry="4" fill="${glow}" opacity=".55"/>
         <circle cx="6" cy="2" r="3.4" fill="#fff"/>
-        <ellipse cy="2" rx="16" ry="19" ${L} stroke-width="2"/></g>
+        ${ring(16, 19, 0, 2)}</g>
         <path d="M-21 -4 Q0 -10 20 -6" ${L} stroke-width="5"/>`;
     case 'kiri':
       return `<g clip-path="url(#${id}-kiri)">
         <rect x="-30" y="-30" width="60" height="60" fill="#fff"/>
-        <ellipse cx="-1" cy="-1" rx="14" ry="17" fill="${ec}"/><ellipse cx="-1" cy="-1" rx="14" ry="17" fill="url(#${id}-iris)"/>
+        ${iris(14, 17, -1, -1)}
         <ellipse cx="-1" cy="1" rx="6" ry="9" fill="${pupil}"/>
         <circle cx="4" cy="-6" r="4" fill="#fff"/></g>
         <path d="M21 5 Q6 -24 -21 -11" ${L} stroke-width="5"/>
         <path d="M14 9 Q-2 16 -16 0" ${L} stroke-width="1.8"/>`;
+    case 'tare':
+      return `<g clip-path="url(#${id}-tare)">
+        <rect x="-30" y="-30" width="60" height="60" fill="#fff"/>
+        ${iris(14, 17, 0, 1)}
+        <ellipse cx="0" cy="3" rx="6" ry="9" fill="${pupil}"/>
+        <ellipse cx="0" cy="12" rx="8" ry="3.6" fill="${glow}" opacity=".6"/>
+        <circle cx="5" cy="-5" r="4.2" fill="#fff"/><circle cx="-5" cy="7" r="1.8" fill="#fff"/></g>
+        <path d="M-23 10 Q-8 -22 20 -9" ${L} stroke-width="5"/>
+        <path d="M-23 10 L-25 15" ${L} stroke-width="3"/>
+        <path d="M-12 14 Q4 17 16 5" ${L} stroke-width="1.6"/>`;
+    case 'uru':
+      return `${iris(17.5, 21.5)}
+        <ellipse cy="3" rx="8" ry="11" fill="${pupil}"/>
+        <ellipse cy="12" rx="11" ry="6" fill="${glow}" opacity=".7"/>
+        ${ring(17.5, 21.5)}
+        <circle cx="6" cy="-9" r="6.6" fill="#fff"/><circle cx="-7" cy="-4" r="3" fill="#fff"/>
+        <circle cx="8" cy="6" r="1.9" fill="#fff"/>
+        <path d="M-11 11 Q0 18 11 11" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".9"/>
+        <path d="M-21 -3 Q-8 -31 19 -15" ${L} stroke-width="5"/>
+        <path d="M-12 23 Q0 26 12 23" ${L} stroke-width="1.6"/>`;
+    case 'neko':
+      return `${iris(16, 19.5)}
+        <ellipse cy="9" rx="11" ry="7" fill="${glow}" opacity=".55"/>
+        <path d="M0 -15 Q5 0 0 15 Q-5 0 0 -15 Z" fill="${pupil}"/>
+        ${ring(16, 19.5)}
+        <circle cx="7" cy="-8" r="3.6" fill="#fff"/><circle cx="-7" cy="8" r="1.8" fill="#fff"/>
+        <path d="M-21 -2 Q-6 -28 19 -17" ${L} stroke-width="5"/>
+        <path d="M-21 -2 L-26 -6" ${L} stroke-width="3"/>`;
+    case 'heart':
+      return `${iris(16.5, 20.5)}
+        <path d="M0 11 C-12 3 -13 -7 -6.5 -8.5 C-3 -9 -0.8 -6.5 0 -4.2 C0.8 -6.5 3 -9 6.5 -8.5 C13 -7 12 3 0 11 Z" fill="#FF6FA6" stroke="${mix('#FF6FA6', LINE, .35)}" stroke-width="1.5" stroke-linejoin="round"/>
+        ${ring(16.5, 20.5)}
+        <circle cx="4" cy="-4.5" r="2.4" fill="#fff"/><circle cx="7" cy="-14" r="2.6" fill="#fff"/>
+        ${topLash}`;
+    case 'star':
+      return `${iris(16.5, 20.5)}
+        <ellipse cy="3" rx="7.5" ry="10.5" fill="${pupil}"/>
+        <ellipse cy="13" rx="9.5" ry="4.5" fill="${glow}" opacity=".6"/>
+        ${ring(16.5, 20.5)}
+        <path transform="translate(4 -6)" d="M0 -9 L2.4 -2.4 L9 0 L2.4 2.4 L0 9 L-2.4 2.4 L-9 0 L-2.4 -2.4 Z" fill="#fff"/>
+        <path transform="translate(-7 9)" d="M0 -4 L1 -1 L4 0 L1 1 L0 4 L-1 1 L-4 0 L-1 -1 Z" fill="#fff"/>
+        ${topLash}`;
+    case 'wink':
+      if (side === 'R') return `<path d="M-15 3 Q0 -12 15 3" ${L} stroke-width="5"/><path d="M-15 3 L-20 -1" ${L} stroke-width="3"/>`;
+      return `${iris(16.5, 20.5)}<ellipse cy="3" rx="7.5" ry="10.5" fill="${pupil}"/>
+        <ellipse cy="13" rx="9.5" ry="4.5" fill="${glow}" opacity=".6"/>${ring(16.5, 20.5)}
+        <circle cx="6" cy="-8" r="5.6" fill="#fff"/><circle cx="-6" cy="8.5" r="2.4" fill="#fff"/>${topLash}`;
+    case 'nemu':
+      return `<path d="M-15 -1 Q0 10 15 -1" ${L} stroke-width="5"/>
+        <path d="M-9 7 L-11 12 M0 9 L0 14 M9 7 L11 12" ${L} stroke-width="2"/>`;
+    case 'gyu':
+      return `<path d="M-11 -10 L10 0 L-11 10" ${L} stroke-width="5"/>`;
+    case 'guru':
+      return `<path d="${SPIRAL}" ${L} stroke-width="3"/>`;
+    case 'ten':
+      return `<ellipse rx="5.5" ry="7.5" fill="#2A1F27"/><circle cx="1.8" cy="-2.6" r="1.6" fill="#fff"/>`;
     case 'niko':
-      return `<path d="M-14 4 Q0 -13 14 4" ${L} stroke-width="5"/>`;
+      return closedArc;
     case 'maru':
       return `<circle r="12.5" fill="#2A1F27"/><circle cx="4.5" cy="-4.5" r="4.4" fill="#fff"/><circle cx="-4" cy="5" r="1.8" fill="#fff"/>`;
     case 'kira':
     default:
-      return `<ellipse rx="16.5" ry="20.5" fill="${ec}"/><ellipse rx="16.5" ry="20.5" fill="url(#${id}-iris)"/>
+      return `${iris(16.5, 20.5)}
         <ellipse cy="3" rx="7.5" ry="10.5" fill="${pupil}"/>
         <ellipse cy="13" rx="9.5" ry="4.5" fill="${glow}" opacity=".6"/>
-        <ellipse rx="16.5" ry="20.5" ${L} stroke-width="2"/>
+        ${ring(16.5, 20.5)}
         <circle cx="6" cy="-8" r="5.6" fill="#fff"/><circle cx="-6" cy="8.5" r="2.4" fill="#fff"/>
-        <path d="M-20 -3 Q-8 -30 18 -15" ${L} stroke-width="5"/>`;
+        ${topLash}`;
   }
 }
 
@@ -628,6 +700,7 @@ function charSVG(s, id) {
     <clipPath id="${id}-head"><path d="${HEAD}"/></clipPath>
     <clipPath id="${id}-jito"><rect x="-26" y="-5" width="52" height="40"/></clipPath>
     <clipPath id="${id}-kiri"><path d="M19 4 Q6 -22 -18 -10 Q-8 18 19 4 Z"/></clipPath>
+    <clipPath id="${id}-tare"><path d="M-21 9 Q-8 -20 19 -8 Q10 19 -21 9 Z"/></clipPath>
     <linearGradient id="${id}-iris" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d0a18" stop-opacity=".55"/><stop offset=".62" stop-color="#0d0a18" stop-opacity="0"/></linearGradient>
   </defs>`;
 
@@ -667,8 +740,8 @@ function charSVG(s, id) {
   <g clip-path="url(#${id}-head)">${face}</g>
   <path d="${HEAD}" ${noFill}/>
   ${blush}
-  <g transform="translate(164 176)">${eyeSVG(s, id)}</g>
-  <g transform="translate(236 176) scale(-1 1)">${eyeSVG(s, id)}</g>
+  <g transform="translate(164 176)">${eyeSVG(s, id, 'L')}</g>
+  <g transform="translate(236 176) scale(-1 1)">${eyeSVG(s, id, 'R')}</g>
   <path d="M195 199 L205 199 L200 205 Z" fill="${noseC}" stroke="${noseC}" stroke-width="1.5" stroke-linejoin="round"/>
   ${mouthSVG(s, id)}
   ${markSVG(s)}
@@ -778,8 +851,8 @@ const TABS = [
     { type: 'color', key: 'inner', label: 'みみの内がわの色', pal: 'inner' },
   ] },
   { id: 'face', label: 'かお', groups: [
-    { type: 'opts', key: 'eyes', label: 'め', opts: [['kira', 'きらきら'], ['jito', 'ジト目'], ['kiri', 'キリッ'], ['niko', 'にっこり'], ['maru', 'まんまる']] },
-    { type: 'color', key: 'eyeColor', label: 'めの色', pal: 'eye', when: s => !['niko', 'maru'].includes(s.eyes) },
+    { type: 'opts', key: 'eyes', label: 'め', opts: [['kira', 'きらきら'], ['uru', 'うるうる'], ['star', 'ほし'], ['heart', 'ハート'], ['neko', 'ねこ目'], ['kiri', 'つり目'], ['tare', 'たれ目'], ['jito', 'ジト目'], ['wink', 'ウインク'], ['niko', 'にっこり'], ['nemu', 'ねむねむ'], ['gyu', '＞＜'], ['guru', 'ぐるぐる'], ['maru', 'まんまる'], ['ten', 'てんてん']] },
+    { type: 'color', key: 'eyeColor', label: 'めの色', pal: 'eye', when: s => !EYE_NO_COLOR.includes(s.eyes) },
     { type: 'opts', key: 'mouth', label: 'くち', opts: [['cat', 'ω'], ['mu', 'ムッ'], ['open', 'にぱっ'], ['smirk', 'ニヤリ']] },
     { type: 'opts', key: 'face', label: 'かおのもよう', opts: [['none', 'なし'], ['muzzle', 'くちもと'], ['mask', 'まんなか']] },
     { type: 'opts', key: 'blush', label: 'ほっぺ', opts: [['on', 'あり'], ['off', 'なし']] },
