@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ソーラメーカー｜あさひにっき</title>
+<meta name="description" content="パーツをえらんで、自分だけのソーラをつくろう。あさひにっきのキャラクターメーカー。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ソーラメーカー｜あさひにっき">
+<meta property="og:description" content="パーツをえらんで、自分だけのソーラをつくろう。">
+<meta property="og:image" content="ogp.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%85%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #E6EFFA;
+  --paper: #FFFFFF;
+  --ink: #3B2F3F;
+  --mute: #6D6578;
+  --sun: #FFC94A;
+  --sun-ink: #3B2F3F;
+  --ring: #F2668B;
+  --line: #3B2F3F;
+  --cardH: min(42svh, 440px);
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1D2032; --paper: #2A2E45; --ink: #F0ECF7; --mute: #ADA6BE; --line: #F0ECF7; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1D2032; --paper: #2A2E45; --ink: #F0ECF7; --mute: #ADA6BE; --line: #F0ECF7; color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: inherit; }
+html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); }
+body {
+  margin: 0; min-height: 100%;
+  background: var(--bg); color: var(--ink);
+  font-family: 'M PLUS Rounded 1c', 'Hiragino Maru Gothic ProN', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+  font-weight: 500; line-height: 1.6;
+  -webkit-tap-highlight-color: transparent;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+
+.top { display: flex; align-items: center; gap: 10px; padding: 14px 18px 4px; max-width: 1100px; margin: 0 auto; }
+.logo { position: relative; width: 34px; height: 20px; flex: none; }
+.logo::before { content: ""; position: absolute; left: 2px; right: 2px; bottom: 0; height: 15px; border-radius: 15px 15px 0 0; background: var(--sun); border: 2.5px solid var(--line); border-bottom: 0; }
+.logo::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2.5px; background: var(--line); border-radius: 2px; }
+.top p { margin: 0; font-size: 12px; font-weight: 700; color: var(--mute); line-height: 1.2; }
+.top h1 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: .04em; line-height: 1.25; }
+
+.layout { max-width: 1100px; margin: 0 auto; padding: 0 0 calc(110px + env(safe-area-inset-bottom, 0px)); }
+.stage { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding: 10px 16px 12px; }
+.card {
+  height: var(--cardH); aspect-ratio: 4 / 5; margin: 0 auto;
+  border: 3px solid var(--line); border-radius: 22px; overflow: hidden;
+  box-shadow: 5px 5px 0 var(--line); background: #fff;
+}
+.card svg { display: block; width: 100%; height: 100%; }
+.card.bump { animation: bump .42s cubic-bezier(.3,1.6,.5,1); }
+@keyframes bump { 0% { transform: scale(.94) rotate(-1.5deg); } 100% { transform: none; } }
+
+.studio { padding: 0 16px; }
+.tabs {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + var(--cardH) + 22px); z-index: 4;
+  display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 12px; margin: 0 -16px; padding-inline: 16px;
+  background: var(--bg); scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: none; font: inherit; font-weight: 800; font-size: 15px; color: var(--ink);
+  background: var(--paper); border: 2.5px solid var(--line); border-radius: 999px; padding: 6px 16px; cursor: pointer;
+}
+.tab[aria-selected="true"] { background: var(--line); color: var(--bg); }
+
+.panel { padding: 4px 0 8px; }
+.group { margin: 0 0 18px; }
+.group h3 { margin: 0 0 8px; font-size: 13px; font-weight: 800; color: var(--mute); letter-spacing: .03em; }
+.hint { margin: 2px 0 12px; font-size: 14px; color: var(--mute); }
+.small { font-size: 12px; color: var(--mute); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font: inherit; font-weight: 700; font-size: 15px; color: var(--ink); cursor: pointer;
+  background: var(--paper); border: 2.5px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 40px;
+  box-shadow: 2px 2px 0 var(--line); transition: transform .08s;
+}
+.chip:active { transform: translate(2px, 2px); box-shadow: none; }
+.chip[aria-pressed="true"] { background: var(--sun); color: var(--sun-ink); }
+
+.swatches { display: flex; flex-wrap: wrap; gap: 10px; }
+.sw {
+  position: relative; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; padding: 0;
+  background: var(--c); border: 2.5px solid var(--line); box-shadow: 2px 2px 0 var(--line);
+}
+.sw[aria-pressed="true"], .sw-custom.is-on { outline: 3px solid var(--ring); outline-offset: 3px; }
+.sw-custom { display: grid; place-items: center; background: conic-gradient(#FF8FA3, #FFC94A, #9FD8C2, #8DB4E3, #9C7CC2, #FF8FA3); }
+.sw-custom.is-on { background: var(--c); }
+.sw-custom span { font-weight: 800; font-size: 18px; color: #3B2F3F; line-height: 1; background: #fff; border-radius: 50%; width: 22px; height: 22px; display: grid; place-items: center; }
+.sw-custom input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; border: 0; padding: 0; }
+
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+.field {
+  flex: 1 1 200px; font: inherit; font-size: 16px; font-weight: 700; color: var(--ink);
+  background: var(--paper); border: 2.5px solid var(--line); border-radius: 14px; padding: 8px 12px; resize: none;
+}
+
+.presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.preset {
+  font: inherit; font-weight: 800; font-size: 13px; color: var(--ink); cursor: pointer;
+  background: var(--paper); border: 2.5px solid var(--line); border-radius: 16px; padding: 6px 4px 4px;
+  box-shadow: 2px 2px 0 var(--line); display: grid; justify-items: center; gap: 0;
+}
+.preset svg { width: 100%; height: auto; aspect-ratio: 400 / 420; display: block; }
+.preset:active { transform: translate(2px, 2px); box-shadow: none; }
+
+.bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 8;
+  display: flex; gap: 10px; justify-content: center;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  background: var(--bg); border-top: 2.5px solid var(--line);
+}
+.btn {
+  flex: 1 1 0; max-width: 260px; font: inherit; font-size: 17px; font-weight: 800; cursor: pointer;
+  border: 3px solid var(--line); border-radius: 999px; padding: 11px 16px; color: var(--ink); background: var(--paper);
+  box-shadow: 3px 3px 0 var(--line);
+}
+.btn:active { transform: translate(3px, 3px); box-shadow: none; }
+.btn-main { background: var(--sun); color: var(--sun-ink); }
+.btn:disabled { opacity: .6; }
+
+button:focus-visible, a:focus-visible, .field:focus-visible, .sw-custom:focus-within { outline: 3px solid var(--ring); outline-offset: 3px; }
+
+dialog.sheet {
+  width: min(440px, calc(100% - 24px)); max-height: calc(100% - 24px); padding: 18px; color: var(--ink);
+  background: var(--paper); border: 3px solid var(--line); border-radius: 24px; box-shadow: 6px 6px 0 var(--line);
+}
+dialog.sheet::backdrop { background: rgba(30, 24, 40, .45); }
+.sheet h2 { margin: 0 0 10px; font-size: 20px; font-weight: 800; }
+.sheet img { display: block; width: 100%; max-height: 52svh; object-fit: contain; border-radius: 14px; border: 2.5px solid var(--line); background: #fff; -webkit-touch-callout: default; }
+.sheet .acts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.sheet .acts .btn { flex: 1 1 140px; font-size: 16px; text-align: center; text-decoration: none; padding: 10px 12px; }
+.sheet .note { margin: 10px 0 0; font-size: 13px; color: var(--mute); }
+.sheet .msg { margin: 8px 0 0; font-size: 14px; font-weight: 700; min-height: 1.2em; }
+
+.toast {
+  position: fixed; left: 50%; bottom: calc(92px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px);
+  background: var(--line); color: var(--bg); font-weight: 700; font-size: 14px; padding: 8px 16px; border-radius: 999px;
+  opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 20; max-width: calc(100% - 32px);
+}
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+@media (min-width: 880px) {
+  :root { --cardH: min(78vh, 620px); }
+  .top { padding: 22px 28px 6px; }
+  .top h1 { font-size: 28px; }
+  .layout { display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: start; padding: 0 28px calc(110px + env(safe-area-inset-bottom, 0px)); }
+  .stage { top: calc(env(safe-area-inset-top, 0px) + 16px); padding: 12px 0; }
+  .studio { padding: 12px 0 0; }
+  .tabs { position: static; flex-wrap: wrap; margin: 0; padding: 0 0 14px; }
+  .presets { grid-template-columns: repeat(4, minmax(0, 130px)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card.bump { animation: none; }
+  .chip, .toast { transition: none; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <span class="logo" aria-hidden="true"></span>
+  <div><p>あさひにっき</p><h1>ソーラメーカー</h1></div>
+</header>
+<main class="layout">
+  <section class="stage" aria-label="プレビュー">
+    <div id="card" class="card" role="img"></div>
+  </section>
+  <section class="studio">
+    <nav id="tabs" class="tabs" role="tablist" aria-label="パーツ"></nav>
+    <div id="panel" class="panel" role="tabpanel"></div>
+  </section>
+</main>
+<div class="bar">
+  <button type="button" class="btn" id="rand">おまかせ</button>
+  <button type="button" class="btn btn-main" id="save">画像にする</button>
+</div>
+<dialog id="sheet" class="sheet" aria-labelledby="sheetTitle">
+  <h2 id="sheetTitle">できあがり！</h2>
+  <img id="shot" alt="">
+  <div class="acts">
+    <button type="button" class="btn btn-main" id="dl">保存する</button>
+    <button type="button" class="btn btn-main" id="share" hidden>共有する</button>
+    <a class="btn" id="post" href="https://twitter.com/intent/tweet" target="_blank" rel="noopener">Xに投稿</a>
+    <button type="button" class="btn" id="close">とじる</button>
+  </div>
+  <p class="msg" id="msg" role="status"></p>
+  <p class="note">画像は長押しでも保存できます。Xに投稿するときは、保存した画像をつけてね。</p>
+</dialog>
+<div class="toast" id="toast" role="status"></div>
+<script>
+/* ===== data ===== */
+const TONES = {
+  genki: { label: 'げんき', lines: ['{n}だよ！いっしょにあそぼ！', 'やっほー！{n}だよ〜！', '{n}、きょうも元気いっぱい！'] },
+  teinei: { label: 'ていねい', lines: ['{n}と申します。どうぞよろしくお願いいたします。', 'はじめまして、{n}です。お見知りおきを。'] },
+  ojou: { label: 'おじょうさま', lines: ['わたくし、{n}ですわ。よろしくってよ。', '{n}ですの。おーっほっほ！'] },
+  cool: { label: 'クール', lines: ['…{n}。べつに、よろしく。', '{n}。…なに、見てんの。'] },
+  nonbiri: { label: 'のんびり', lines: ['{n}だよぉ〜…ふわぁ…ねむい…', 'ん〜…{n}だよぉ。おひるねしよ〜'] },
+  oresama: { label: 'おれさま', lines: ['オレ様が{n}だ！ひれ伏せ！', 'この{n}様に会えるとは、運がいいな！'] },
+  nanoda: { label: '〜なのだ', lines: ['{n}なのだ！よろしくなのだ！', '{n}はおなかがすいたのだ…'] },
+  ssu: { label: '〜っす', lines: ['{n}っす！よろしくっす！', 'うっす！{n}っす！がんばるっす！'] },
+  gozaru: { label: '〜ござる', lines: ['拙者、{n}と申すでござる。', '{n}でござる。ニンニン。'] },
+};
+
+const NAMES = ['ポポ', 'ルル', 'ミント', 'ソラ', 'キキ', 'モモ', 'ラテ', 'ココ', 'チャイ', 'ユズ', 'ネネ', 'リリ', 'トト', 'ナナ', 'ムギ', 'シロ', 'クルミ', 'メル', 'ハク', 'ルナ', 'ペコ', 'ミル'];
+
+const PAL = {
+  main: [['#FBF5F6', 'しろ'], ['#FBF2BC', 'クリーム'], ['#F8B9C8', 'ピンク'], ['#9C7CC2', 'むらさき'], ['#7E2148', 'ワイン'], ['#E5B566', 'きんいろ'], ['#262B57', 'こん'], ['#3F6070', 'あおみどり'], ['#8DB4E3', 'みずいろ'], ['#F6B37C', 'オレンジ'], ['#9FD8C2', 'ミント'], ['#8E6A55', 'ちゃいろ'], ['#B8B6C8', 'グレー'], ['#3A3440', 'くろ']],
+  light: [['#FFFFFF', 'しろ'], ['#FBF1E4', 'きなり'], ['#FFF9DE', 'レモン'], ['#FCDDE4', 'さくら'], ['#E4DAF4', 'ラベンダー'], ['#DDEBFA', 'そら'], ['#DDF3E8', 'わかば'], ['#F8E2B0', 'はちみつ']],
+  inner: [['#F2B2B9', 'ピンク'], ['#F380AA', 'こいピンク'], ['#E9A9C7', 'ローズ'], ['#EB9C86', 'サーモン'], ['#3F6CE6', 'あお'], ['#4A0F25', 'こげちゃ'], ['#F8E2B0', 'クリーム'], ['#BFD4F2', 'みずいろ']],
+  eye: [['#3B86D9', 'あお'], ['#3858CC', 'こん'], ['#9B6FB5', 'むらさき'], ['#C2372E', 'あか'], ['#B9711F', 'こはく'], ['#7C4A1E', 'ちゃいろ'], ['#3F9A6E', 'みどり'], ['#E0679A', 'ピンク'], ['#2E2A35', 'くろ']],
+  hair: [['#FBF5F6', 'しろ'], ['#FCF4C8', 'クリーム'], ['#FDE3EA', 'さくら'], ['#C7A3DE', 'ラベンダー'], ['#8A2450', 'ワイン'], ['#E9BC68', 'きんいろ'], ['#262B57', 'こん'], ['#3F6070', 'あおみどり'], ['#8DB4E3', 'みずいろ'], ['#F6B37C', 'オレンジ'], ['#8E6A55', 'ちゃいろ'], ['#3A3440', 'くろ']],
+  clothes: [['#232027', 'くろ'], ['#FBF8F3', 'しろ'], ['#2F4A8A', 'あお'], ['#B33A4A', 'あか'], ['#F2C14E', 'きいろ'], ['#6FB58E', 'みどり'], ['#E8A0BF', 'ピンク'], ['#262B57', 'こん'], ['#8E6A55', 'ちゃいろ']],
+  accent: [['#C3202F', 'あか'], ['#A779CF', 'むらさき'], ['#F28AB2', 'ピンク'], ['#3B86D9', 'あお'], ['#F2C14E', 'きいろ'], ['#6E1E35', 'えんじ'], ['#2E2A35', 'くろ']],
+  mark: [['#2B2026', 'くろ'], ['#3A0B1E', 'えんじ'], ['#E7A6CC', 'ピンク'], ['#3B86D9', 'あお'], ['#E8A33A', 'きん'], ['#FFFFFF', 'しろ']],
+  bg: [['#DCEBFA', 'そら'], ['#FFE7D6', 'あさやけ'], ['#FFF1CF', 'ひだまり'], ['#FFE4EC', 'さくら'], ['#F3E6F7', 'ゆうぐれ'], ['#E0EFEC', 'ミント'], ['#E1E6FA', 'よぞら'], ['#F4F1F6', 'くもり']],
+};
+
+const BASE = {
+  name: 'ソーラ', body: 'normal', ears: 'pin', main: '#FBF5F6', sub: '#8DB4E3', fluff: '#FFFFFF', inner: '#F2B2B9',
+  pattern: 'none', face: 'none', eyes: 'kira', eyeColor: '#3B86D9', mouth: 'cat', blush: 'on',
+  hair: 'none', hairColor: '#FBF5F6', tail: 'fluffy', tipOn: 'off', tipColor: '#FFFFFF',
+  clothes: 'none', clothesColor: '#232027', accent: '#C3202F', acc: {},
+  mark: 'sora', markColor: '#2B2026', tone: 'genki', lineIdx: 0, lineAuto: true, line: '',
+  bg: '#DCEBFA', bgDeco: 'sun',
+};
+
+const PRESETS = [
+  { name: 'マーリ', main: '#FBF5F6', sub: '#8DB4E3', fluff: '#FFFFFF', inner: '#F2B2B9', pattern: 'zigzag', eyes: 'kira', eyeColor: '#3B86D9', mouth: 'cat', tail: 'fluffy', mark: 'sora', tone: 'genki', bg: '#DCEBFA', bgDeco: 'sun' },
+  { name: 'モカ', body: 'slim', main: '#9C7CC2', sub: '#9C7CC2', fluff: '#FFFFFF', inner: '#E9A9C7', pattern: 'belly', face: 'muzzle', eyes: 'jito', eyeColor: '#9B6FB5', mouth: 'mu', hair: 'long', hairColor: '#C7A3DE', tail: 'fluffy', tipOn: 'on', tipColor: '#F2A9C4', clothes: 'dress', clothesColor: '#FFFFFF', accent: '#A779CF', acc: { ribbon: true }, mark: 'maro', markColor: '#E7A6CC', tone: 'cool', bg: '#F3E6F7', bgDeco: 'kira' },
+  { name: 'ブラット', main: '#7E2148', sub: '#7E2148', fluff: '#7E2148', inner: '#4A0F25', eyes: 'kiri', eyeColor: '#6E4A3C', mouth: 'mu', blush: 'off', hair: 'pomp', hairColor: '#8A2450', tail: 'thin', clothes: 'suit', clothesColor: '#232027', accent: '#6E1E35', acc: { glasses: true }, mark: 'sora', markColor: '#3A0B1E', tone: 'teinei', bg: '#F4F1F6', bgDeco: 'none' },
+  { name: 'ジュノ', main: '#E5B566', sub: '#E5B566', fluff: '#F8E2B0', inner: '#F8E2B0', face: 'muzzle', eyes: 'kiri', eyeColor: '#7C4A1E', mouth: 'cat', hair: 'side', hairColor: '#E9BC68', tail: 'curl', clothes: 'suit', clothesColor: '#FBF8F3', accent: '#C3202F', acc: { crown: true }, mark: 'none', tone: 'oresama', bg: '#FFF1CF', bgDeco: 'kira' },
+  { name: 'ピーチ', main: '#FBF2BC', sub: '#F6B37C', fluff: '#FFF9DE', inner: '#F380AA', pattern: 'zigzag', eyes: 'kiri', eyeColor: '#C2372E', mouth: 'cat', hair: 'tuft', hairColor: '#FCF4C8', tail: 'fluffy', mark: 'sora', tone: 'ojou', bg: '#FFE7D6', bgDeco: 'sun' },
+  { name: 'クク', body: 'chubby', main: '#F8B9C8', sub: '#F8B9C8', fluff: '#FCDDE4', inner: '#F2908E', eyes: 'maru', mouth: 'open', hair: 'moko', hairColor: '#FDE3EA', tail: 'pom', tipOn: 'on', tipColor: '#FDE3EA', mark: 'none', tone: 'nanoda', bg: '#FFE4EC', bgDeco: 'dots' },
+  { name: 'コハイ', body: 'chubby', main: '#262B57', sub: '#262B57', fluff: '#F7E9DD', inner: '#3F6CE6', pattern: 'belly', face: 'mask', eyes: 'kira', eyeColor: '#3858CC', mouth: 'cat', hair: 'bosa', hairColor: '#262B57', tail: 'pom', tipOn: 'on', tipColor: '#C8CEF7', clothes: 'bowtie', clothesColor: '#262B57', mark: 'none', tone: 'nonbiri', bg: '#E1E6FA', bgDeco: 'kira' },
+  { name: 'アイス', main: '#3F6070', sub: '#FBF1E4', fluff: '#FBF1E4', inner: '#EB9C86', pattern: 'bellysocks', face: 'mask', ears: 'yoko', eyes: 'kira', eyeColor: '#B9711F', mouth: 'cat', hair: 'piyo', hairColor: '#3F6070', tail: 'fluffy', tipOn: 'on', tipColor: '#FBF1E4', mark: 'sora', tone: 'ssu', bg: '#E0EFEC', bgDeco: 'sun' },
+];
+
+function lineFor(s) {
+  const t = TONES[s.tone] || TONES.genki;
+  const tpl = t.lines[(s.lineIdx || 0) % t.lines.length];
+  return tpl.replace(/\{n\}/g, (String(s.name || '').trim() || 'ソーラ'));
+}
+function fromPreset(p) {
+  const s = Object.assign({}, BASE, JSON.parse(JSON.stringify(p)));
+  s.acc = Object.assign({}, p.acc || {});
+  s.lineAuto = true; s.lineIdx = 0; s.line = lineFor(s);
+  return s;
+}
+
+if (typeof module !== 'undefined') module.exports = { TONES, NAMES, PAL, BASE, PRESETS, lineFor, fromPreset };
+
+/* ===== ソーラ renderer ===== */
+const LINE = '#3B2F3F';
+const FONT = "'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Hiragino Sans','Yu Gothic','Noto Sans JP','Noto Sans CJK JP',sans-serif";
+
+function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+function hexToRgb(h) {
+  h = String(h || '#000').replace('#', '');
+  if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  const n = parseInt(h, 16) || 0;
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+function rgbToHex(r, g, b) {
+  return '#' + [r, g, b].map(v => clamp(Math.round(v), 0, 255).toString(16).padStart(2, '0')).join('');
+}
+function mix(a, b, t) {
+  const A = hexToRgb(a), B = hexToRgb(b);
+  return rgbToHex(A[0] + (B[0] - A[0]) * t, A[1] + (B[1] - A[1]) * t, A[2] + (B[2] - A[2]) * t);
+}
+function lum(h) { const [r, g, b] = hexToRgb(h); return (0.299 * r + 0.587 * g + 0.114 * b) / 255; }
+function esc(t) {
+  return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+const n1 = v => Math.round(v * 10) / 10;
+
+/* ---------- parts ---------- */
+const HEAD = 'M200 84 C252 84 290 116 293 160 L304 172 L291 178 L300 192 L284 194 C272 228 238 246 200 246 C162 246 128 228 116 194 L100 192 L109 178 L96 172 L107 160 C110 116 148 84 200 84 Z';
+const EAR_OUT = 'M168 102 C130 74 80 58 30 56 C44 98 78 150 122 172 Z';
+const EAR_IN = 'M156 112 C124 90 86 76 52 72 C66 104 92 140 126 160 Z';
+const EAR_TUFT = 'M122 160 L104 154 L112 147 L96 139 L111 134 L101 122 L119 127 L127 140 Z';
+
+function earTransform(type) {
+  if (type === 'yoko') return 'rotate(-24 150 132)';
+  if (type === 'chibi') return 'translate(150 132) scale(0.66) rotate(14) translate(-150 -132)';
+  if (type === 'tare') return 'rotate(-48 150 132)';
+  return '';
+}
+
+function torsoPath(W) {
+  return `M164 236 C156 258 ${200 - W} 290 ${200 - W} 330 C${200 - W} 360 ${204 - W} 378 ${212 - W} 388 L190 388 Q200 380 210 388 L${188 + W} 388 C${196 + W} 378 ${200 + W} 360 ${200 + W} 330 C${200 + W} 290 244 258 236 236 Z`;
+}
+function legPath(W, m) {
+  const X = dx => n1(200 + m * dx);
+  const o = W - 8, i = 8;
+  return `M${X(o)} 355 C${X(o + 2)} 390 ${X(o + 4)} 418 ${X(o - 2)} 432 Q${X(o - 6)} 442 ${X(o - 18)} 442 L${X(i + 8)} 442 Q${X(i - 2)} 442 ${X(i - 2)} 430 C${X(i - 2)} 410 ${X(i)} 380 ${X(i)} 355 Z`;
+}
+function legToes(W, m) {
+  const X = dx => n1(200 + m * dx);
+  const o = W - 8, i = 8;
+  const a = i + (o - i) * 0.36, b = i + (o - i) * 0.68;
+  return `M${X(a)} 433 L${X(a)} 441 M${X(b)} 433 L${X(b)} 441`;
+}
+function armPath(W, m) {
+  const X = dx => n1(200 + m * dx);
+  return `M${X(0.62 * W)} 250 C${X(W + 4)} 258 ${X(W + 16)} 296 ${X(W + 14)} 326 Q${X(W + 13)} 348 ${X(W - 1)} 348 Q${X(W - 14)} 347 ${X(W - 12)} 328 C${X(W - 10)} 300 ${X(0.5 * W)} 282 ${X(0.4 * W)} 268 Z`;
+}
+function armFingers(W, m) {
+  const X = dx => n1(200 + m * dx);
+  return `M${X(W + 5)} 340 L${X(W + 5)} 347 M${X(W - 4)} 340 L${X(W - 4)} 347`;
+}
+
+function patternShapes(s, W, where) {
+  const out = [];
+  const p = s.pattern;
+  if ((p === 'belly' || p === 'bellysocks') && where === 'torso') {
+    out.push(`<ellipse cx="200" cy="326" rx="${n1(W * 0.64)}" ry="58" fill="${s.fluff}"/>`);
+  }
+  if (p === 'zigzag') {
+    out.push(`<path d="M80 338 L132 338 L150 320 L168 337 L185 318 L200 334 L215 318 L232 337 L250 320 L268 338 L320 338 L320 470 L80 470 Z" fill="${s.sub}"/>`);
+  }
+  if ((p === 'socks' || p === 'bellysocks') && (where === 'legs' || where === 'arm')) {
+    if (where === 'legs') out.push(`<path d="M80 414 Q110 406 140 414 Q170 422 200 414 Q230 406 260 414 Q290 422 320 414 L320 470 L80 470 Z" fill="${s.sub}"/>`);
+    else out.push(`<rect x="0" y="333" width="400" height="40" fill="${s.sub}"/>`);
+  }
+  return out.join('');
+}
+
+/* eyes are drawn in local space around (0,0); right eye is mirrored */
+function eyeSVG(s, id) {
+  const ec = s.eyeColor;
+  const glow = mix(ec, '#ffffff', 0.55);
+  const pupil = mix(ec, '#120f1c', 0.82);
+  const L = `stroke="${LINE}" stroke-linecap="round" stroke-linejoin="round" fill="none"`;
+  switch (s.eyes) {
+    case 'jito':
+      return `<g clip-path="url(#${id}-jito)">
+        <ellipse cy="2" rx="16" ry="19" fill="${ec}"/><ellipse cy="2" rx="16" ry="19" fill="url(#${id}-iris)"/>
+        <ellipse cy="7" rx="7" ry="9" fill="${pupil}"/>
+        <ellipse cy="14" rx="9" ry="4" fill="${glow}" opacity=".55"/>
+        <circle cx="6" cy="2" r="3.4" fill="#fff"/>
+        <ellipse cy="2" rx="16" ry="19" ${L} stroke-width="2"/></g>
+        <path d="M-21 -4 Q0 -10 20 -6" ${L} stroke-width="5"/>`;
+    case 'kiri':
+      return `<g clip-path="url(#${id}-kiri)">
+        <rect x="-30" y="-30" width="60" height="60" fill="#fff"/>
+        <ellipse cx="-1" cy="-1" rx="14" ry="17" fill="${ec}"/><ellipse cx="-1" cy="-1" rx="14" ry="17" fill="url(#${id}-iris)"/>
+        <ellipse cx="-1" cy="1" rx="6" ry="9" fill="${pupil}"/>
+        <circle cx="4" cy="-6" r="4" fill="#fff"/></g>
+        <path d="M21 5 Q6 -24 -21 -11" ${L} stroke-width="5"/>
+        <path d="M14 9 Q-2 16 -16 0" ${L} stroke-width="1.8"/>`;
+    case 'niko':
+      return `<path d="M-14 4 Q0 -13 14 4" ${L} stroke-width="5"/>`;
+    case 'maru':
+      return `<circle r="12.5" fill="#2A1F27"/><circle cx="4.5" cy="-4.5" r="4.4" fill="#fff"/><circle cx="-4" cy="5" r="1.8" fill="#fff"/>`;
+    case 'kira':
+    default:
+      return `<ellipse rx="16.5" ry="20.5" fill="${ec}"/><ellipse rx="16.5" ry="20.5" fill="url(#${id}-iris)"/>
+        <ellipse cy="3" rx="7.5" ry="10.5" fill="${pupil}"/>
+        <ellipse cy="13" rx="9.5" ry="4.5" fill="${glow}" opacity=".6"/>
+        <ellipse rx="16.5" ry="20.5" ${L} stroke-width="2"/>
+        <circle cx="6" cy="-8" r="5.6" fill="#fff"/><circle cx="-6" cy="8.5" r="2.4" fill="#fff"/>
+        <path d="M-20 -3 Q-8 -30 18 -15" ${L} stroke-width="5"/>`;
+  }
+}
+
+function mouthSVG(s, id) {
+  const L = `stroke="${LINE}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"`;
+  switch (s.mouth) {
+    case 'mu': return `<path d="M191 216 Q200 208 209 216" ${L}/>`;
+    case 'smirk': return `<path d="M188 211 Q200 220 214 206" ${L}/>`;
+    case 'open':
+      return `<clipPath id="${id}-mouth"><path d="M184 207 Q200 236 216 207 Q200 212 184 207 Z"/></clipPath>
+        <path d="M184 207 Q200 236 216 207 Q200 212 184 207 Z" fill="#8B2E3C"/>
+        <ellipse cx="200" cy="225" rx="9" ry="6" fill="#F28CA0" clip-path="url(#${id}-mouth)"/>
+        <path d="M188 208.6 L191 215 L194.5 209.8 Z M212 208.6 L209 215 L205.5 209.8 Z" fill="#fff"/>
+        <path d="M184 207 Q200 236 216 207 Q200 212 184 207 Z" ${L}/>`;
+    case 'cat':
+    default:
+      return `<path d="M186 208 Q193 218 200 209 Q207 218 214 208" ${L}/>`;
+  }
+}
+
+function markSVG(s) {
+  const c = s.markColor;
+  switch (s.mark) {
+    case 'sora':
+      return `<g transform="translate(200 127) scale(.92)" fill="${c}">
+        <path d="M0 -26 C8 -17 9 -6 0 5 C-9 -6 -8 -17 0 -26 Z"/>
+        <path d="M-5 -5 C-10 -18 -21 -21 -28 -14 C-20 -12 -13 -7 -8 1 Z"/>
+        <path d="M5 -5 C10 -18 21 -21 28 -14 C20 -12 13 -7 8 1 Z"/>
+        <path d="M0 27 C-15 19 -27 8 -25 -3 C-23 -11 -13 -11 -7 -3 C-11 -5 -17 -3 -17 4 C-17 12 -7 18 0 22 Z"/>
+        <path d="M0 27 C15 19 27 8 25 -3 C23 -11 13 -11 7 -3 C11 -5 17 -3 17 4 C17 12 7 18 0 22 Z"/></g>`;
+    case 'star':
+      return `<path transform="translate(200 128)" d="M0 -15 L4.4 -5 L15 -4.6 L6.8 2.4 L9.4 13 L0 7.2 L-9.4 13 L-6.8 2.4 L-15 -4.6 L-4.4 -5 Z" fill="${c}" stroke="${c}" stroke-width="2" stroke-linejoin="round"/>`;
+    case 'maro':
+      return `<ellipse cx="176" cy="140" rx="9.5" ry="5.5" fill="${c}"/><ellipse cx="224" cy="140" rx="9.5" ry="5.5" fill="${c}"/>`;
+    case 'moon':
+      return `<path transform="translate(200 128)" d="M4 -16 A16 16 0 1 0 4 16 A12 12 0 1 1 4 -16 Z" fill="${c}"/>`;
+    case 'drop':
+      return `<path transform="translate(200 126)" d="M0 -16 C7 -6 10 0 10 5 A10 10 0 0 1 -10 5 C-10 0 -7 -6 0 -16 Z" fill="${c}"/>`;
+    default: return '';
+  }
+}
+
+function hairBack(s) {
+  if (s.hair !== 'long') return '';
+  const c = s.hairColor, hl = mix(c, '#fff', .35);
+  const tail = 'M134 98 C74 104 62 172 72 242 C82 302 56 352 70 402 C76 426 98 432 106 416 C96 396 112 360 110 310 C108 252 114 176 150 122 Z';
+  const st = `stroke="${LINE}" stroke-width="3" stroke-linejoin="round"`;
+  return `<path d="${tail}" fill="${c}" ${st}/><path d="${tail}" transform="translate(400 0) scale(-1 1)" fill="${c}" ${st}/>
+    <path d="M100 150 C88 200 98 260 90 320" stroke="${hl}" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M300 150 C312 200 302 260 310 320" stroke="${hl}" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+}
+
+function hairFront(s, id) {
+  const c = s.hairColor, hl = mix(c, '#fff', .38), sh = mix(c, LINE, .25);
+  const st = `stroke="${LINE}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"`;
+  const hls = d => `<path d="${d}" stroke="${hl}" stroke-width="3.2" fill="none" stroke-linecap="round"/>`;
+  switch (s.hair) {
+    case 'tuft':
+      return `<path d="M154 118 L146 98 L158 99 L152 76 L168 85 L169 62 L183 75 L191 50 L202 70 L215 51 L221 74 L236 63 L235 86 L250 80 L244 100 L255 103 L244 120 Q200 102 154 118 Z" fill="${c}" ${st}/>
+        <path d="M184 104 L190 86 M206 102 L212 82 M224 106 L232 92 M168 108 L172 94" stroke="${sh}" stroke-width="2" stroke-linecap="round"/>`;
+    case 'piyo':
+      return `<path d="M180 96 C178 74 192 60 212 56 C203 67 205 74 216 71 C207 80 209 88 220 95 Q200 86 180 96 Z" fill="${c}" ${st}/>`;
+    case 'pomp':
+      return `<path d="M132 126 C116 70 160 34 212 36 C262 38 288 72 272 122 C258 102 234 94 204 96 C178 98 152 108 132 126 Z" fill="${c}" ${st}/>
+        <path d="M262 64 C276 50 290 50 302 54 C290 60 282 68 276 82" fill="${c}" ${st}/>
+        ${hls('M154 98 C166 66 200 52 238 58')}${hls('M170 102 C186 78 218 70 254 80')}
+        <path d="M186 98 C198 82 222 78 246 86" stroke="${sh}" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+    case 'moko': {
+      const cs = [[172, 98, 18], [200, 86, 22], [228, 98, 18], [184, 74, 15], [216, 74, 15], [158, 110, 12], [242, 110, 12], [200, 66, 13]];
+      const o = cs.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}"/>`).join('');
+      return `<g fill="${LINE}" stroke="${LINE}" stroke-width="6">${o}</g><g fill="${c}">${o}</g>
+        <path d="M200 58 C194 42 212 34 220 44 C226 52 214 58 208 51" fill="none" stroke="${LINE}" stroke-width="9" stroke-linecap="round"/>
+        <path d="M200 58 C194 42 212 34 220 44 C226 52 214 58 208 51" fill="none" stroke="${c}" stroke-width="3.6" stroke-linecap="round"/>
+        <circle cx="200" cy="66" r="10" fill="${c}"/>
+        <path d="M178 92 q6 -6 12 0 M206 80 q6 -6 12 0 M220 100 q5 -5 10 0" stroke="${sh}" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+    }
+    case 'side':
+      return `<path d="M112 168 C98 104 146 64 204 64 C260 64 300 100 292 152 C282 128 264 114 242 108 C248 118 250 128 246 140 C234 118 212 106 188 108 C166 112 148 126 140 152 C138 136 141 124 148 116 C132 126 120 144 112 168 Z" fill="${c}" ${st}/>
+        <path d="M162 70 C150 56 152 46 160 40 C164 52 172 60 184 64" fill="${c}" ${st}/>
+        ${hls('M156 90 C176 74 214 70 246 82')}${hls('M134 120 C142 104 156 94 172 88')}`;
+    case 'long':
+      return `<path d="M110 172 C102 106 146 74 200 74 C254 74 298 106 290 172 L278 172 C276 150 268 132 254 120 Q246 140 232 146 Q238 124 226 108 Q212 100 200 98 Q188 100 174 108 Q162 124 168 146 Q154 140 146 120 Q132 132 122 172 Z" fill="${c}" ${st}/>
+        <path d="M122 150 C110 190 116 232 134 252 C128 222 130 190 142 158 Z" fill="${c}" ${st}/>
+        <path d="M278 150 C290 190 284 232 266 252 C272 222 270 190 258 158 Z" fill="${c}" ${st}/>
+        ${hls('M146 96 C160 86 178 80 194 79')}${hls('M206 79 C222 80 240 86 254 96')}`;
+    case 'bosa':
+      return `<path d="M112 178 C98 112 140 64 200 62 C262 64 302 112 288 178 L278 158 L276 178 L266 142 C258 124 244 112 228 106 L224 122 L214 106 C206 116 202 128 200 146 C198 128 194 116 186 106 L176 122 L172 106 C156 112 142 124 134 142 L124 178 L122 158 Z" fill="${c}" ${st}/>
+        <path d="M196 64 C192 50 200 42 212 44 C205 49 203 56 205 64" fill="${c}" ${st}/>
+        ${hls('M150 92 C168 78 190 72 212 72')}${hls('M236 80 C252 88 266 102 274 120')}`;
+    default: return '';
+  }
+}
+
+function tailSVG(s, id) {
+  const main = s.main, tip = s.tipOn === 'on', tc = s.tipColor;
+  const st = `stroke="${LINE}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"`;
+  const fur = mix(main, LINE, .35);
+  switch (s.tail) {
+    case 'thin': {
+      const d = 'M244 366 C296 384 326 350 316 310 C308 280 318 254 342 258';
+      return `<path d="${d}" stroke="${LINE}" stroke-width="19" fill="none" stroke-linecap="round"/>
+        <path d="${d}" stroke="${main}" stroke-width="13" fill="none" stroke-linecap="round"/>
+        ${tip ? `<path d="M318 268 C322 260 330 256 342 258" stroke="${tc}" stroke-width="13" fill="none" stroke-linecap="round"/>` : ''}`;
+    }
+    case 'pom': {
+      const col = tip ? tc : main;
+      const cs = [[268, 352, 27], [289, 338, 14], [293, 360, 14], [280, 378, 13], [256, 377, 12], [247, 342, 12], [266, 324, 13]];
+      const o = cs.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}"/>`).join('');
+      return `<g fill="${LINE}" stroke="${LINE}" stroke-width="6">${o}</g><g fill="${col}">${o}</g>
+        <path d="M262 346 q6 -6 12 0 M276 364 q5 -5 10 0" stroke="${mix(col, LINE, .3)}" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+    }
+    case 'curl': {
+      const d = 'M246 370 C300 396 358 360 352 304 C348 262 304 244 280 266 C268 278 270 296 284 300 C286 290 296 284 306 288 C320 296 322 322 308 336 C292 350 270 352 250 346 Z';
+      return `<clipPath id="${id}-tail"><path d="${d}"/></clipPath>
+        <path d="${d}" fill="${main}"/>
+        ${tip ? `<path d="M250 230 L304 230 L300 260 L292 270 L306 286 L292 312 L250 312 Z" fill="${tc}" clip-path="url(#${id}-tail)"/>` : ''}
+        <path d="${d}" fill="none" ${st}/>
+        <path d="M322 360 L334 352 M340 330 L350 326 M330 280 L340 272" stroke="${fur}" stroke-width="2" stroke-linecap="round"/>`;
+    }
+    case 'none': return '';
+    case 'fluffy':
+    default: {
+      const d = 'M246 372 C282 394 336 378 346 332 C354 298 342 272 318 256 L321 276 L307 269 L311 290 L297 285 C297 314 278 336 250 344 Z';
+      return `<clipPath id="${id}-tail"><path d="${d}"/></clipPath>
+        <path d="${d}" fill="${main}"/>
+        ${tip ? `<path d="M280 300 L296 292 L306 302 L318 290 L330 300 L342 288 L362 296 L362 230 L280 230 Z" fill="${tc}" clip-path="url(#${id}-tail)"/>` : ''}
+        <path d="${d}" fill="none" ${st}/>
+        <path d="M316 346 L328 338 M334 316 L346 311 M300 360 L310 356" stroke="${fur}" stroke-width="2" stroke-linecap="round"/>`;
+    }
+  }
+}
+
+function bowSVG(x, y, rot, color) {
+  const st = `stroke="${LINE}" stroke-width="2.6" stroke-linejoin="round"`;
+  return `<g transform="translate(${x} ${y}) rotate(${rot})">
+    <path d="M0 0 C-8 -15 -27 -15 -25 0 C-27 15 -8 15 0 0 Z" fill="${color}" ${st}/>
+    <path d="M0 0 C8 -15 27 -15 25 0 C27 15 8 15 0 0 Z" fill="${color}" ${st}/>
+    <circle r="5.5" fill="${mix(color, LINE, .15)}" ${st}/>
+    <circle cx="-15" cy="-4" r="1.6" fill="#fff" opacity=".85"/><circle cx="-10" cy="5" r="1.2" fill="#fff" opacity=".8"/>
+    <circle cx="14" cy="-5" r="1.4" fill="#fff" opacity=".85"/><circle cx="17" cy="4" r="1.1" fill="#fff" opacity=".8"/></g>`;
+}
+
+const CROWN_Y = { none: 82, tuft: 60, piyo: 72, pomp: 46, moko: 58, side: 66, long: 74, bosa: 62 };
+
+function accSVG(s) {
+  const a = s.acc || {};
+  const out = [];
+  const st = `stroke="${LINE}" stroke-width="2.6" stroke-linejoin="round"`;
+  if (a.glasses) {
+    out.push(`<g fill="none" stroke="#6E5244" stroke-width="2.8" stroke-linecap="round">
+      <circle cx="164" cy="176" r="23" fill="#fff" fill-opacity=".16"/><circle cx="236" cy="176" r="23" fill="#fff" fill-opacity=".16"/>
+      <path d="M187 172 Q200 165 213 172 M141 170 L118 163 M259 170 L282 163"/></g>
+      <path d="M152 162 L160 158 M224 162 L232 158" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity=".8"/>`);
+  }
+  if (a.flower) {
+    const fx = 142, fy = 108;
+    const petals = [0, 72, 144, 216, 288].map(t => {
+      const r = t * Math.PI / 180;
+      return `<circle cx="${n1(fx + Math.cos(r) * 9)}" cy="${n1(fy + Math.sin(r) * 9)}" r="7.5" fill="${s.accent}" ${st}/>`;
+    }).join('');
+    out.push(petals + `<circle cx="${fx}" cy="${fy}" r="5.5" fill="#FFD45A" ${st}/>`);
+  }
+  if (a.ribbon) {
+    out.push(bowSVG(158, 96, -18, s.accent) + bowSVG(242, 96, 18, s.accent));
+  }
+  if (a.crown) {
+    const y = CROWN_Y[s.hair] ?? 80;
+    out.push(`<g transform="translate(236 ${y}) rotate(14)">
+      <path d="M-24 10 L-27 -14 L-13 -2 L-2 -22 L9 -2 L22 -16 L22 10 Z" fill="#F4C443" ${st}/>
+      <path d="M-24.5 4 L22 4" stroke="${LINE}" stroke-width="1.6" opacity=".5"/>
+      <circle cx="-27" cy="-14" r="3.6" fill="#FFF3CF" ${st}/><circle cx="-2" cy="-22" r="3.6" fill="#FFF3CF" ${st}/><circle cx="22" cy="-16" r="3.6" fill="#FFF3CF" ${st}/>
+      <path d="M-2 -7 L3 -1 L-2 5 L-7 -1 Z" fill="${s.accent}" stroke="${LINE}" stroke-width="1.6" stroke-linejoin="round"/></g>`);
+  }
+  return out.join('');
+}
+
+function clothesBody(s, W, id) {
+  const c = s.clothesColor;
+  const st = `stroke="${LINE}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"`;
+  const thin = `stroke="${LINE}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill="none"`;
+  if (s.clothes === 'suit') {
+    const shirt = lum(c) > 0.85 ? '#FFFFFF' : '#FBFAF7';
+        return `<g clip-path="url(#${id}-torso)">
+      <rect x="0" y="230" width="400" height="170" fill="${c}"/>
+      <path d="M178 236 L200 296 L222 236 Z" fill="${shirt}"/>
+      <path d="M178 236 L166 272 L182 270 L200 300 M222 236 L234 272 L218 270 L200 300" stroke="${lum(c) < 0.3 ? mix(c, '#fff', .35) : LINE}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+      <path d="M200 300 L200 384" ${thin} opacity=".6"/>
+      <path d="M${n1(200 - W * .78)} 344 L${n1(200 - W * .36)} 344 M${n1(200 + W * .36)} 344 L${n1(200 + W * .78)} 344" ${thin} opacity=".7"/>
+    </g>
+    <circle cx="207" cy="318" r="3" fill="${mix(c, LINE, .4)}"/><circle cx="207" cy="338" r="3" fill="${mix(c, LINE, .4)}"/>
+    <path d="M195 241 L205 241 L204 250 L196 250 Z" fill="${s.accent}" stroke="${LINE}" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M196 250 L204 250 L208 286 L200 297 L192 286 Z" fill="${s.accent}" stroke="${LINE}" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M197 262 Q201 260 205 264 M196 276 Q201 274 206 278" stroke="${mix(s.accent, '#fff', .4)}" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
+  }
+  if (s.clothes === 'dress') {
+    const x0 = 200 - W - 12, x1 = 200 + W + 12, n = 6, step = (x1 - x0) / n;
+    let hem = '';
+    for (let k = 0; k < n; k++) hem += ` Q${n1(x0 + step * (k + 0.5))} 404 ${n1(x0 + step * (k + 1))} 390`;
+    const d = `M${n1(200 - .72 * W)} 262 C${n1(200 - W - 2)} 300 ${n1(200 - W - 6)} 350 ${n1(x0)} 390${hem} C${n1(200 + W + 6)} 350 ${n1(200 + W + 2)} 300 ${n1(200 + .72 * W)} 262 Q200 272 ${n1(200 - .72 * W)} 262 Z`;
+    let frill = '';
+    for (let k = 0; k < n; k++) frill += `M${n1(x0 + 4 + step * k)} 383 q${n1(step / 2 - 4)} 7 ${n1(step - 8)} 0 `;
+    return `<path d="${d}" fill="${c}" ${st}/><path d="${frill}" stroke="${mix(c, LINE, .3)}" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
+  }
+  return '';
+}
+
+function clothesNeck(s) {
+  const c = s.clothesColor;
+  const st = `stroke="${LINE}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"`;
+  if (s.clothes === 'bowtie') {
+    return `<path d="M200 254 L180 243 L180 265 Z M200 254 L220 243 L220 265 Z" fill="${c}" ${st}/><rect x="194" y="248" width="12" height="12" rx="4" fill="${mix(c, LINE, .2)}" ${st}/>`;
+  }
+  if (s.clothes === 'scarf') {
+    const stripe = mix(c, '#fff', .45);
+    return `<path d="M222 254 L240 300 L224 306 L210 258 Z" fill="${c}" ${st}/>
+      <path d="M226 270 L232 268 M231 284 L237 282" stroke="${stripe}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M146 234 Q200 262 254 234 L256 252 Q200 284 144 252 Z" fill="${c}" ${st}/>
+      <path d="M160 248 Q200 268 240 248" stroke="${stripe}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  }
+  return '';
+}
+
+function ruffSVG(s, W) {
+  if (s.clothes === 'suit') return '';
+  const rw = 46 + (W - 60) * 0.3;
+  const X = dx => n1(200 + dx);
+  const d = `M${X(-rw)} 234 L${X(-rw + 6)} 250 L${X(-rw - 4)} 258 L${X(-rw + 12)} 266 L${X(-rw + 6)} 278 L${X(-rw + 24)} 281 L200 306 L${X(rw - 24)} 281 L${X(rw - 6)} 278 L${X(rw - 12)} 266 L${X(rw + 4)} 258 L${X(rw - 6)} 250 L${X(rw)} 234 Q200 246 ${X(-rw)} 234 Z`;
+  const fur = mix(s.fluff, LINE, .28);
+  return `<path d="${d}" fill="${s.fluff}" stroke="${LINE}" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M182 270 L188 282 M216 266 L212 280 M198 284 L200 294" stroke="${fur}" stroke-width="1.8" stroke-linecap="round"/>`;
+}
+
+function charSVG(s, id) {
+  const W = { slim: 54, normal: 64, chubby: 78 }[s.body] || 64;
+  const st = `stroke="${LINE}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"`;
+  const noFill = `fill="none" ${st}`;
+  const torso = torsoPath(W);
+  const legs = [legPath(W, -1), legPath(W, 1)];
+  const arms = [armPath(W, -1), armPath(W, 1)];
+  const eT = earTransform(s.ears);
+  const earGroup = `<path d="${EAR_OUT}" fill="${s.main}"/><path d="${EAR_IN}" fill="${s.inner}"/><path d="${EAR_TUFT}" fill="${s.fluff}" stroke="${LINE}" stroke-width="2" stroke-linejoin="round"/><path d="${EAR_OUT}" ${noFill}/>`;
+  const sleeve = s.clothes === 'suit';
+  const socks = s.pattern === 'socks' || s.pattern === 'bellysocks';
+
+  const defs = `<defs>
+    <clipPath id="${id}-torso"><path d="${torso}"/></clipPath>
+    <clipPath id="${id}-legs"><path d="${legs[0]}"/><path d="${legs[1]}"/></clipPath>
+    <clipPath id="${id}-armL"><path d="${arms[0]}"/></clipPath>
+    <clipPath id="${id}-armR"><path d="${arms[1]}"/></clipPath>
+    <clipPath id="${id}-head"><path d="${HEAD}"/></clipPath>
+    <clipPath id="${id}-jito"><rect x="-26" y="-5" width="52" height="40"/></clipPath>
+    <clipPath id="${id}-kiri"><path d="M19 4 Q6 -22 -18 -10 Q-8 18 19 4 Z"/></clipPath>
+    <linearGradient id="${id}-iris" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d0a18" stop-opacity=".55"/><stop offset=".62" stop-color="#0d0a18" stop-opacity="0"/></linearGradient>
+  </defs>`;
+
+  const armSVG = (k) => {
+    const id2 = `${id}-arm${k === 0 ? 'L' : 'R'}`, m = k === 0 ? -1 : 1;
+    let over = '';
+    if (sleeve) over += `<rect x="0" y="236" width="400" height="98" fill="${s.clothesColor}"/><rect x="0" y="329" width="400" height="6" fill="#FBFAF7"/>`;
+    else if (socks) over += patternShapes(s, W, 'arm');
+    return `<path d="${arms[k]}" fill="${s.main}"/>${over ? `<g clip-path="url(#${id2})">${over}</g>` : ''}<path d="${arms[k]}" ${noFill}/><path d="${armFingers(W, m)}" stroke="${LINE}" stroke-width="2" stroke-linecap="round"/>`;
+  };
+
+  let face = '';
+  if (s.face === 'muzzle') face = `<ellipse cx="200" cy="228" rx="66" ry="34" fill="${s.fluff}"/>`;
+  if (s.face === 'mask') face = `<path d="M200 116 C232 116 264 150 276 192 C266 230 234 248 200 248 C166 248 134 230 124 192 C136 150 168 116 200 116 Z" fill="${s.fluff}"/>`;
+
+  const blush = s.blush === 'on' ? `<g fill="#F48FAE" opacity=".42"><ellipse cx="146" cy="204" rx="15" ry="8"/><ellipse cx="254" cy="204" rx="15" ry="8"/></g>
+    <path d="M140 202 l-3 5 M147 202 l-3 5 M154 202 l-3 5 M249 202 l-3 5 M256 202 l-3 5 M263 202 l-3 5" stroke="#E0708F" stroke-width="1.5" stroke-linecap="round" opacity=".55"/>` : '';
+
+  const noseC = lum(s.main) > 0.75 && s.face !== 'mask' ? mix(s.inner, LINE, .25) : LINE;
+
+  return `${defs}
+  ${hairBack(s)}
+  ${tailSVG(s, id)}
+  <g transform="${eT}">${earGroup}</g>
+  <g transform="translate(400 0) scale(-1 1)"><g transform="${eT}">${earGroup}</g></g>
+  ${legs.map((d, k) => `<path d="${d}" fill="${s.main}"/>`).join('')}
+  <g clip-path="url(#${id}-legs)">${patternShapes(s, W, 'legs')}</g>
+  ${legs.map((d, k) => `<path d="${d}" ${noFill}/><path d="${legToes(W, k === 0 ? -1 : 1)}" stroke="${LINE}" stroke-width="2" stroke-linecap="round"/>`).join('')}
+  <path d="${torso}" fill="${s.main}"/>
+  <g clip-path="url(#${id}-torso)">${patternShapes(s, W, 'torso')}</g>
+  <path d="${torso}" ${noFill}/>
+  ${clothesBody(s, W, id)}
+  ${armSVG(0)}${armSVG(1)}
+  ${ruffSVG(s, W)}
+  ${clothesNeck(s)}
+  <path d="${HEAD}" fill="${s.main}"/>
+  <g clip-path="url(#${id}-head)">${face}</g>
+  <path d="${HEAD}" ${noFill}/>
+  ${blush}
+  <g transform="translate(164 176)">${eyeSVG(s, id)}</g>
+  <g transform="translate(236 176) scale(-1 1)">${eyeSVG(s, id)}</g>
+  <path d="M195 199 L205 199 L200 205 Z" fill="${noseC}" stroke="${noseC}" stroke-width="1.5" stroke-linejoin="round"/>
+  ${mouthSVG(s, id)}
+  ${markSVG(s)}
+  ${hairFront(s, id)}
+  ${accSVG(s)}`;
+}
+
+/* ---------- speech text wrapping ---------- */
+const NO_START = '、。，．！？!?…ー〜」』）)ぁぃぅぇぉっゃゅょァィゥェォッャュョ';
+function wrapText(text, max, maxLines) {
+  const chars = Array.from(String(text || '').replace(/\s+/g, ' ').trim());
+  const lines = [];
+  let cur = '', w = 0;
+  for (const ch of chars) {
+    const cw = /[\x20-\x7e]/.test(ch) ? 0.55 : 1;
+    if (w + cw > max && cur) {
+      if (NO_START.includes(ch)) { cur += ch; w += cw; continue; }
+      lines.push(cur); cur = ''; w = 0;
+      if (ch === ' ') continue;
+    }
+    cur += ch; w += cw;
+  }
+  if (cur) lines.push(cur);
+  if (lines.length > maxLines) {
+    const keep = lines.slice(0, maxLines);
+    keep[maxLines - 1] = Array.from(keep[maxLines - 1]).slice(0, -1).join('') + '…';
+    return keep;
+  }
+  return lines;
+}
+
+function textWidth(t, fs) {
+  return Array.from(t).reduce((a, ch) => a + (/[\x20-\x7e]/.test(ch) ? 0.58 : 1), 0) * fs;
+}
+
+function bgDeco(s) {
+  const d = s.bgDeco;
+  if (d === 'sun') {
+    return `<circle cx="200" cy="318" r="182" fill="#fff" opacity=".22"/><circle cx="200" cy="318" r="128" fill="#fff" opacity=".28"/><circle cx="200" cy="318" r="74" fill="#fff" opacity=".3"/>`;
+  }
+  if (d === 'dots') {
+    let o = '';
+    for (let y = 18; y < 500; y += 34) for (let x = (y / 34) % 2 ? 34 : 17; x < 400; x += 34) o += `<circle cx="${x}" cy="${y}" r="4"/>`;
+    return `<g fill="#fff" opacity=".55">${o}</g>`;
+  }
+  if (d === 'kira') {
+    const pts = [[48, 150, 12], [352, 170, 10], [70, 330, 8], [338, 360, 13], [40, 420, 7], [368, 270, 7], [300, 120, 6], [100, 230, 6]];
+    return `<g fill="#fff" opacity=".85">${pts.map(([x, y, r]) => `<path transform="translate(${x} ${y})" d="M0 ${-r} Q${r * .18} ${-r * .18} ${r} 0 Q${r * .18} ${r * .18} 0 ${r} Q${-r * .18} ${r * .18} ${-r} 0 Q${-r * .18} ${-r * .18} 0 ${-r} Z"/>`).join('')}</g>`;
+  }
+  return '';
+}
+
+/* full share card, 400x500 (4:5) */
+function cardSVG(s, id = 'c', opts = {}) {
+  const lines = wrapText(s.line, 16, 3);
+  const fs = 17.5, lh = 24;
+  const by = 16, bh = 24 + lines.length * lh, r = 18;
+  const hasBubble = lines.length > 0;
+  const bubble = hasBubble ? `<path d="M${24 + r} ${by} H${376 - r} Q376 ${by} 376 ${by + r} V${by + bh - r} Q376 ${by + bh} ${376 - r} ${by + bh} H214 L202 ${by + bh + 14} L190 ${by + bh} H${24 + r} Q24 ${by + bh} 24 ${by + bh - r} V${by + r} Q24 ${by} ${24 + r} ${by} Z" fill="#fff" stroke="${LINE}" stroke-width="3" stroke-linejoin="round"/>
+    <g font-family="${esc(FONT)}" font-size="${fs}" font-weight="700" fill="${LINE}" text-anchor="middle">${lines.map((t, i) => `<text x="200" y="${n1(by + 12 + fs + i * lh)}">${esc(t)}</text>`).join('')}</g>` : '';
+  const name = String(s.name || '').trim() || 'ソーラ';
+  const maxPlate = 196;
+  let nfs = 16, nw = textWidth(name, nfs) + 34;
+  if (nw > maxPlate) { nfs = Math.max(10, (maxPlate - 34) / (textWidth(name, 1))); nw = maxPlate; }
+  const plate = `<rect x="22" y="452" width="${n1(nw)}" height="32" rx="16" fill="${LINE}"/>
+    <text x="${n1(22 + nw / 2)}" y="474" font-family="${esc(FONT)}" font-size="${nfs}" font-weight="800" fill="#fff" text-anchor="middle">${esc(name)}</text>
+    <text x="378" y="474" font-family="${esc(FONT)}" font-size="12" font-weight="700" fill="${LINE}" fill-opacity=".62" text-anchor="end">#あさひにっき #ソーラメーカー</text>`;
+  const size = opts.width ? `width="${opts.width}" height="${opts.width * 1.25}"` : '';
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" ${size}>
+  <rect width="400" height="500" fill="${s.bg}"/>
+  ${bgDeco(s)}
+  <ellipse cx="200" cy="444" rx="86" ry="9" fill="${LINE}" opacity=".12"/>
+  <g transform="translate(28 64) scale(.86)">${charSVG(s, id)}</g>
+  ${bubble}
+  ${plate}
+</svg>`;
+}
+
+/* small preview of just the character */
+function thumbSVG(s, id) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 30 400 420" aria-hidden="true">${charSVG(s, id)}</svg>`;
+}
+
+if (typeof module !== 'undefined') module.exports = { cardSVG, thumbSVG, charSVG, wrapText };
+
+/* ===== UI ===== */
+const STORE_KEY = 'sora-maker-v1';
+let S = (() => {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) { const o = JSON.parse(raw); if (o && o.main) return Object.assign({}, BASE, o); }
+  } catch (e) { /* storage unavailable */ }
+  return fromPreset(PRESETS[0]);
+})();
+
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch (e) { /* ignore */ } }
+
+const TABS = [
+  { id: 'preset', label: 'みんな' },
+  { id: 'body', label: 'からだ', groups: [
+    { type: 'opts', key: 'body', label: 'たいけい', opts: [['slim', 'ほっそり'], ['normal', 'ふつう'], ['chubby', 'ぽっちゃり']] },
+    { type: 'opts', key: 'ears', label: 'みみ', opts: [['pin', 'ぴんっ'], ['yoko', 'よこ'], ['tare', 'たれ'], ['chibi', 'ちびみみ']] },
+    { type: 'color', key: 'main', label: 'からだの色', pal: 'main' },
+    { type: 'opts', key: 'pattern', label: 'もよう', opts: [['none', 'なし'], ['belly', 'おなか'], ['zigzag', 'ギザギザ'], ['socks', 'てあし'], ['bellysocks', 'おなか＋てあし']] },
+    { type: 'color', key: 'sub', label: 'ギザギザ・てあしの色', pal: 'main', when: s => ['zigzag', 'socks', 'bellysocks'].includes(s.pattern) },
+    { type: 'color', key: 'fluff', label: 'むなげ・おなかの色', pal: 'light' },
+    { type: 'color', key: 'inner', label: 'みみの内がわの色', pal: 'inner' },
+  ] },
+  { id: 'face', label: 'かお', groups: [
+    { type: 'opts', key: 'eyes', label: 'め', opts: [['kira', 'きらきら'], ['jito', 'ジト目'], ['kiri', 'キリッ'], ['niko', 'にっこり'], ['maru', 'まんまる']] },
+    { type: 'color', key: 'eyeColor', label: 'めの色', pal: 'eye', when: s => !['niko', 'maru'].includes(s.eyes) },
+    { type: 'opts', key: 'mouth', label: 'くち', opts: [['cat', 'ω'], ['mu', 'ムッ'], ['open', 'にぱっ'], ['smirk', 'ニヤリ']] },
+    { type: 'opts', key: 'face', label: 'かおのもよう', opts: [['none', 'なし'], ['muzzle', 'くちもと'], ['mask', 'まんなか']] },
+    { type: 'opts', key: 'blush', label: 'ほっぺ', opts: [['on', 'あり'], ['off', 'なし']] },
+  ] },
+  { id: 'hair', label: 'かみ', groups: [
+    { type: 'opts', key: 'hair', label: 'かみがた', opts: [['none', 'なし'], ['tuft', 'ふわトサカ'], ['piyo', 'ぴょこ'], ['pomp', 'リーゼント'], ['moko', 'もこもこ'], ['side', 'サイドわけ'], ['long', 'ツインテール'], ['bosa', 'ぼさぼさ']] },
+    { type: 'color', key: 'hairColor', label: 'かみの色', pal: 'hair', when: s => s.hair !== 'none' },
+  ] },
+  { id: 'tail', label: 'しっぽ', groups: [
+    { type: 'opts', key: 'tail', label: 'しっぽ', opts: [['fluffy', 'ふさふさ'], ['thin', 'ほそながい'], ['pom', 'まんまる'], ['curl', 'くるりん'], ['none', 'なし']] },
+    { type: 'opts', key: 'tipOn', label: 'さきっぽの色', opts: [['off', 'おなじ'], ['on', 'かえる']], when: s => s.tail !== 'none' },
+    { type: 'color', key: 'tipColor', label: 'さきっぽ', pal: 'light', when: s => s.tail !== 'none' && s.tipOn === 'on' },
+  ] },
+  { id: 'wear', label: 'ふく', groups: [
+    { type: 'opts', key: 'clothes', label: 'ふく', opts: [['none', 'なし'], ['suit', 'スーツ'], ['dress', 'ワンピース'], ['bowtie', 'ちょうネクタイ'], ['scarf', 'マフラー']] },
+    { type: 'color', key: 'clothesColor', label: 'ふくの色', pal: 'clothes', when: s => s.clothes !== 'none' },
+    { type: 'toggles', key: 'acc', label: 'アクセサリー（いくつでも）', opts: [['crown', 'おうかん'], ['glasses', 'めがね'], ['ribbon', 'リボン'], ['flower', 'おはな']] },
+    { type: 'color', key: 'accent', label: 'ネクタイ・リボン・おはなの色', pal: 'accent' },
+  ] },
+  { id: 'mark', label: 'マーク', groups: [
+    { type: 'opts', key: 'mark', label: 'ひたいのマーク', opts: [['none', 'なし'], ['sora', 'ソーラもん'], ['star', 'ほし'], ['moon', 'つき'], ['drop', 'しずく'], ['maro', 'まろまゆ']] },
+    { type: 'color', key: 'markColor', label: 'マークの色', pal: 'mark', when: s => s.mark !== 'none' },
+  ] },
+  { id: 'talk', label: 'くちょう', groups: [
+    { type: 'name', label: 'なまえ' },
+    { type: 'opts', key: 'tone', label: 'くちょう', opts: Object.entries(TONES).map(([k, v]) => [k, v.label]) },
+    { type: 'line', label: 'セリフ' },
+  ] },
+  { id: 'bg', label: 'はいけい', groups: [
+    { type: 'color', key: 'bg', label: 'はいけいの色', pal: 'bg' },
+    { type: 'opts', key: 'bgDeco', label: 'もよう', opts: [['sun', 'おひさま'], ['kira', 'きらきら'], ['dots', 'ドット'], ['none', 'なし']] },
+  ] },
+];
+
+let tab = 'preset';
+const $ = sel => document.querySelector(sel);
+const cardEl = $('#card'), panelEl = $('#panel'), tabsEl = $('#tabs');
+
+function renderCard() {
+  if (S.lineAuto) S.line = lineFor(S);
+  cardEl.innerHTML = cardSVG(S, 'c');
+  cardEl.setAttribute('aria-label', `${S.name || 'ソーラ'}「${S.line}」`);
+  save();
+}
+
+function renderTabs() {
+  tabsEl.innerHTML = TABS.map(t => `<button role="tab" type="button" class="tab" data-tab="${t.id}" aria-selected="${t.id === tab}">${t.label}</button>`).join('');
+}
+
+function swatches(g) {
+  const cur = String(S[g.key] || '').toLowerCase();
+  const list = PAL[g.pal];
+  const known = list.some(([c]) => c.toLowerCase() === cur);
+  return `<div class="swatches" role="group" aria-label="${g.label}">
+    ${list.map(([c, n]) => `<button type="button" class="sw" style="--c:${c}" data-key="${g.key}" data-val="${c}" aria-label="${n}" aria-pressed="${c.toLowerCase() === cur}"></button>`).join('')}
+    <label class="sw sw-custom${known ? '' : ' is-on'}" style="--c:${known ? 'transparent' : S[g.key]}" title="じぶんで色をえらぶ">
+      <input type="color" data-key="${g.key}" value="${S[g.key]}" aria-label="${g.label}をじぶんでえらぶ"><span aria-hidden="true">＋</span>
+    </label>
+  </div>`;
+}
+
+function renderPanel() {
+  const t = TABS.find(x => x.id === tab);
+  if (t.id === 'preset') {
+    panelEl.innerHTML = `<p class="hint">ベースにしたい子をえらんでね。そこから好きにかえられます。</p>
+      <div class="presets">${PRESETS.map((p, i) => `<button type="button" class="preset" data-preset="${i}">${thumbSVG(fromPreset(p), 'p' + i)}<span>${p.name}</span></button>`).join('')}</div>`;
+    return;
+  }
+  panelEl.innerHTML = t.groups.filter(g => !g.when || g.when(S)).map(g => {
+    let body = '';
+    if (g.type === 'opts') {
+      body = `<div class="chips" role="group" aria-label="${g.label}">${g.opts.map(([v, l]) => `<button type="button" class="chip" data-key="${g.key}" data-val="${v}" aria-pressed="${S[g.key] === v}">${l}</button>`).join('')}</div>`;
+    } else if (g.type === 'toggles') {
+      body = `<div class="chips" role="group" aria-label="${g.label}">${g.opts.map(([v, l]) => `<button type="button" class="chip" data-toggle="${g.key}" data-val="${v}" aria-pressed="${!!(S[g.key] || {})[v]}">${l}</button>`).join('')}</div>`;
+    } else if (g.type === 'color') {
+      body = swatches(g);
+    } else if (g.type === 'name') {
+      body = `<div class="row"><input id="nameIn" class="field" type="text" maxlength="12" value="${esc(S.name)}" autocomplete="off" aria-label="なまえ"><button type="button" class="chip" id="nameDice">ランダム</button></div>`;
+    } else if (g.type === 'line') {
+      body = `<div class="row"><textarea id="lineIn" class="field" rows="2" maxlength="44" aria-label="セリフ">${esc(S.line)}</textarea></div>
+        <div class="row"><button type="button" class="chip" id="lineNext">べつのセリフ</button><span class="small">じぶんで書きかえてもOK</span></div>`;
+    }
+    return `<section class="group"><h3>${g.label}</h3>${body}</section>`;
+  }).join('');
+}
+
+function renderAll() { renderCard(); renderTabs(); renderPanel(); }
+
+tabsEl.addEventListener('click', e => {
+  const b = e.target.closest('[data-tab]'); if (!b) return;
+  tab = b.dataset.tab; renderTabs(); renderPanel();
+  b.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+});
+
+panelEl.addEventListener('click', e => {
+  const p = e.target.closest('[data-preset]');
+  if (p) { S = fromPreset(PRESETS[+p.dataset.preset]); renderCard(); bump(); return; }
+  const b = e.target.closest('button[data-key]');
+  if (b) {
+    S[b.dataset.key] = b.dataset.val;
+    if (b.dataset.key === 'tone') { S.lineAuto = true; S.lineIdx = 0; }
+    renderCard(); renderPanel(); return;
+  }
+  const tg = e.target.closest('[data-toggle]');
+  if (tg) {
+    const k = tg.dataset.toggle; S[k] = Object.assign({}, S[k]); S[k][tg.dataset.val] = !S[k][tg.dataset.val];
+    renderCard(); renderPanel(); return;
+  }
+  if (e.target.id === 'nameDice') {
+    S.name = pick(NAMES.filter(n => n !== S.name)); renderCard(); renderPanel(); return;
+  }
+  if (e.target.id === 'lineNext') {
+    S.lineAuto = true; S.lineIdx = (S.lineIdx || 0) + 1; renderCard(); renderPanel(); return;
+  }
+});
+
+panelEl.addEventListener('input', e => {
+  const t = e.target;
+  if (t.matches('input[type=color]')) { S[t.dataset.key] = t.value; renderCard(); return; }
+  if (t.id === 'nameIn') { S.name = t.value; renderCard(); if (S.lineAuto) { const li = $('#lineIn'); if (li) li.value = S.line; } return; }
+  if (t.id === 'lineIn') { S.lineAuto = false; S.line = t.value; renderCard(); return; }
+});
+panelEl.addEventListener('change', e => { if (e.target.matches('input[type=color]')) renderPanel(); });
+
+function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+function bump() {
+  cardEl.classList.remove('bump'); void cardEl.offsetWidth; cardEl.classList.add('bump');
+}
+
+function randomize() {
+  const opt = key => { for (const t of TABS) for (const g of (t.groups || [])) if (g.key === key && g.opts) return pick(g.opts)[0]; };
+  const col = pal => pick(PAL[pal])[0];
+  const r = {
+    name: pick(NAMES), body: opt('body'), ears: Math.random() < .6 ? 'pin' : opt('ears'),
+    main: col('main'), sub: col(Math.random() < .5 ? 'main' : 'light'), fluff: col('light'), inner: col('inner'),
+    pattern: opt('pattern'), face: Math.random() < .55 ? 'none' : opt('face'),
+    eyes: opt('eyes'), eyeColor: col('eye'), mouth: opt('mouth'), blush: Math.random() < .8 ? 'on' : 'off',
+    hair: opt('hair'), tail: opt('tail') , tipOn: Math.random() < .45 ? 'on' : 'off', tipColor: col('light'),
+    clothes: Math.random() < .45 ? 'none' : opt('clothes'), clothesColor: col('clothes'), accent: col('accent'),
+    acc: { crown: Math.random() < .18, glasses: Math.random() < .18, ribbon: Math.random() < .2, flower: Math.random() < .15 },
+    mark: Math.random() < .5 ? 'sora' : opt('mark'), tone: opt('tone'), lineIdx: Math.floor(Math.random() * 3), lineAuto: true,
+    bg: col('bg'), bgDeco: opt('bgDeco'),
+  };
+  if (r.tail === 'none' && Math.random() < .7) r.tail = 'fluffy';
+  r.hairColor = Math.random() < .55 ? r.main : col('hair');
+  r.markColor = lum(r.main) < .35 || (r.face === 'mask' && lum(r.fluff) < .35) ? pick(['#FFFFFF', '#E8A33A', '#E7A6CC']) : pick(['#2B2026', '#2B2026', '#3B86D9', '#E8A33A']);
+  if (r.face === 'mask' && lum(r.fluff) > .6) r.markColor = pick(['#2B2026', '#3B86D9']);
+  S = Object.assign({}, BASE, r);
+  renderCard(); renderPanel(); bump();
+}
+$('#rand').addEventListener('click', randomize);
+
+/* ----- export ----- */
+const sheet = $('#sheet');
+let pngBlob = null, downloads = null;
+
+function svgToPng(svg, w, h) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+      const ctx = cv.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      cv.toBlob(b => b ? resolve({ blob: b, url: cv.toDataURL('image/png') }) : reject(new Error('toBlob')), 'image/png');
+    };
+    img.onerror = () => reject(new Error('image'));
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  });
+}
+
+function fileName() {
+  const n = (String(S.name || '').trim() || 'sora').replace(/[\\/:*?"<>|\s]+/g, '');
+  return `sora-${n}.png`;
+}
+
+$('#save').addEventListener('click', async () => {
+  const btn = $('#save'); btn.disabled = true; btn.textContent = 'つくってます…';
+  try {
+    const { blob, url } = await svgToPng(cardSVG(S, 'x', { width: 1080 }), 1080, 1350);
+    pngBlob = blob;
+    $('#shot').src = url;
+    $('#shot').alt = `${S.name || 'ソーラ'}のカード`;
+    const txt = `${(S.name || 'ソーラ').trim()}をつくったよ！`;
+    const pageUrl = location.protocol.startsWith('http') ? location.href.split('#')[0] : '';
+    $('#post').href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(txt) + (pageUrl ? '&url=' + encodeURIComponent(pageUrl) : '') + '&hashtags=' + encodeURIComponent('あさひにっき,ソーラメーカー');
+    let canShare = false;
+    try { canShare = !!(navigator.canShare && navigator.canShare({ files: [new File([blob], fileName(), { type: 'image/png' })] })); } catch (e) { canShare = false; }
+    $('#share').hidden = !canShare;
+    $('#msg').textContent = '';
+    sheet.showModal();
+  } catch (e) {
+    toast('画像をつくれませんでした。もう一度ためしてね。');
+  } finally {
+    btn.disabled = false; btn.textContent = '画像にする';
+  }
+});
+
+$('#dl').addEventListener('click', () => {
+  if (!pngBlob) return;
+  try {
+    const url = URL.createObjectURL(pngBlob);
+    const a = document.createElement('a');
+    a.href = url; a.download = fileName();
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    $('#msg').textContent = '保存しました。';
+  } catch (e) {
+    $('#msg').textContent = '保存できないときは、画像を長押しして保存してね。';
+  }
+});
+
+$('#share').addEventListener('click', async () => {
+  if (!pngBlob) return;
+  try {
+    await navigator.share({ files: [new File([pngBlob], fileName(), { type: 'image/png' })], text: `${(S.name || 'ソーラ').trim()}をつくったよ！ #あさひにっき #ソーラメーカー ${location.protocol.startsWith('http') ? location.href.split('#')[0] : ''}`.trim() });
+  } catch (e) {
+    if (e && e.name === 'AbortError') return;
+    $('#share').hidden = true;
+    $('#msg').textContent = 'ここでは共有できないので、画像を保存してから投稿してね。';
+  }
+});
+
+$('#close').addEventListener('click', () => sheet.close());
+sheet.addEventListener('click', e => { if (e.target === sheet) sheet.close(); });
+
+let toastT;
+function toast(m) {
+  const t = $('#toast'); t.textContent = m; t.classList.add('on');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2600);
+}
+
+renderAll();
+
+</script>
+</body>
+</html>
